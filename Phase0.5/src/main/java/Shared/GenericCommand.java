@@ -3,9 +3,6 @@ package Shared;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import Shared.ICommand;
-import Shared.Results;
-
 /**
  * Created by ephraimkunz on 1/12/18.
  */
@@ -50,9 +47,9 @@ public class GenericCommand implements ICommand {
             if (e.getCause().getClass().equals(NumberFormatException.class)) {
                 return new Results(false, null, Results.NumberFormatException);
             }
-            return new Results(false, null, e.getCause().toString()); // Threw and exception that we didn't know about
+            return new Results(false, null, e.getCause().toString()); // Threw an exception that we didn't know about
         } catch (Exception e) {
-            return new Results(false, null, e.toString()); // Bad class name?
+            return new Results(false, null, e.toString()); // Bad class or type name?
         }
     }
 }
