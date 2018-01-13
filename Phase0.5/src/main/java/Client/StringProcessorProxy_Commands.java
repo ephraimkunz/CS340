@@ -2,6 +2,7 @@ package Client;
 
 import com.google.gson.Gson;
 
+import Shared.GenericCommand;
 import Shared.ICommand;
 import Shared.IStringProcessor;
 import Shared.Results;
@@ -12,6 +13,12 @@ import Shared.Results;
 
 public class StringProcessorProxy_Commands implements IStringProcessor {
     private static StringProcessorProxy_Commands instance = new StringProcessorProxy_Commands();
+    private static final String url = "http://localhost:8080/execCommand";
+    private static final String recieverClass = "Server.StringProcessor";
+    private static final String stringClass = "java.lang.String";
+    private static final String lowercaseMethod = "toLowercase";
+    private static final String trimMethod = "trim";
+    private static final String parseIntMethod = "parseInteger";
 
     private StringProcessorProxy_Commands(){}
 
@@ -19,55 +26,53 @@ public class StringProcessorProxy_Commands implements IStringProcessor {
         return instance;
     }
 
-    @Override
-    public String toLowercase(String s) {
-        ICommand command = new GenericCommand(
-                "Server.StringProcessor",
-                "toLowercase",
-                new String[]{"java.lang.String"},
-                new Object[]{s});
-
+    private static Results getResults(ICommand command) {
         Gson gson = new Gson();
         String json = gson.toJson(command);
-        Results results = ClientCommunicator.getInstance().send("http://localhost:8080/execCommand", json);
+        return ClientCommunicator.getInstance().send(url, json);
+    }
 
+    private static String response(Results results) {
         if (results.isSuccess()) {
             return results.getData();
         } else {
-            return results.getErrorInfo();
+            return results.getErrorInfo(); // For debugging. We don't expect to ever get this.
         }
+    }
+
+    @Override
+    public String toLowercase(String s) {
+        ICommand command = new GenericCommand(
+                recieverClass,
+                lowercaseMethod,
+                new String[]{stringClass},
+                new Object[]{s});
+
+        Results results = getResults(command);
+        return response(results);
     }
 
     @Override
     public String trim(String s) {
         ICommand command = new GenericCommand(
-                "Server.StringProcessor",
-                "trim",
-                new String[]{"java.lang.String"},
+                recieverClass,
+                trimMethod,
+                new String[]{stringClass},
                 new Object[]{s});
 
-        Gson gson = new Gson();
-        String json = gson.toJson(command);
-        Results results = ClientCommunicator.getInstance().send("http://localhost:8080/execCommand", json);
-
-        if (results.isSuccess()) {
-            return results.getData();
-        } else {
-            return results.getErrorInfo();
-        }
+        Results results = getResults(command);
+        return response(results);
     }
 
     @Override
     public String parseInteger(String s) {
         ICommand command = new GenericCommand(
-                "Server.StringProcessor",
-                "parseInteger",
-                new String[]{"java.lang.String"},
+                recieverClass,
+                parseIntMethod,
+                new String[]{stringClass},
                 new Object[]{s});
 
-        Gson gson = new Gson();
-        String json = gson.toJson(command);
-        Results results = ClientCommunicator.getInstance().send("http://localhost:8080/execCommand", json);
+        Results results = getResults(command);
 
         if (results.isSuccess()) {
             return results.getData();
@@ -75,6 +80,6 @@ public class StringProcessorProxy_Commands implements IStringProcessor {
             throw new NumberFormatException();
         }
 
-        throw new RuntimeException(results.getErrorInfo());
+        return results.getErrorInfo();
     }
 }

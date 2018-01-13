@@ -5,16 +5,14 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
 
-import Client.GenericCommand;
+import Shared.GenericCommand;
+import Shared.ICommand;
 import Shared.Results;
 import Shared.Serializer;
 
@@ -44,11 +42,22 @@ public class ServerCommunicator {
         }
     }
 
+    // Sends the Results r onto the exchange.
+    public static void sendResult(Results r, HttpExchange ex) throws IOException {
+        ex.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
+
+        OutputStream respBody = ex.getResponseBody();
+        Serializer.write(r, respBody);
+        respBody.close();
+    }
+
     public static void main(String[] args) {
         System.out.println("Hello, World!");
         new ServerCommunicator().run();
     }
 }
+
+/**** Handlers ****/
 
 class ParseIntegerHandler implements HttpHandler {
 
@@ -67,13 +76,7 @@ class ParseIntegerHandler implements HttpHandler {
             results = new Results(false, null, Results.NumberFormatException);
         }
 
-        exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
-
-        OutputStream respBody = exchange.getResponseBody();
-        Gson gson = new Gson();
-        String json = gson.toJson(results);
-        Serializer.writeBodyWithString(json, respBody);
-        respBody.close();
+        ServerCommunicator.sendResult(results, exchange);
     }
 }
 
@@ -87,13 +90,7 @@ class TrimHandler implements HttpHandler {
         String result = StringProcessor.getInstance().trim(input);
         Results results = new Results(true, result, null);
 
-        exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
-
-        OutputStream respBody = exchange.getResponseBody();
-        Gson gson = new Gson();
-        String json = gson.toJson(results);
-        Serializer.writeBodyWithString(json, respBody);
-        respBody.close();
+        ServerCommunicator.sendResult(results, exchange);
     }
 }
 
@@ -106,13 +103,7 @@ class LowercaseHandler implements HttpHandler {
         String result = StringProcessor.getInstance().toLowercase(input);
         Results results = new Results(true, result, null);
 
-        exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
-
-        OutputStream respBody = exchange.getResponseBody();
-        Gson gson = new Gson();
-        String json = gson.toJson(results);
-        Serializer.writeBodyWithString(json, respBody);
-        respBody.close();
+        ServerCommunicator.sendResult(results, exchange);
     }
 }
 
@@ -123,13 +114,9 @@ class ExecCommandHandler implements HttpHandler {
         String input = Serializer.readBodyAsString(reqBody);
 
         Gson gson = new Gson();
-        GenericCommand command = gson.fromJson(input, GenericCommand.class);
+        ICommand command = gson.fromJson(input, GenericCommand.class);
         Results results = command.execute();
 
-        exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
-        OutputStream respBody = exchange.getResponseBody();
-        String json = gson.toJson(results);
-        Serializer.writeBodyWithString(json, respBody);
-        respBody.close();
+        ServerCommunicator.sendResult(results, exchange);
     }
 }

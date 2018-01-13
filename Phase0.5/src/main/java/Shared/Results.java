@@ -6,7 +6,9 @@ package Shared;
 
 public class Results {
     private boolean success;
-    private String data;
+    private String data; // Hold data if success
+    private String errorInfo; // Hold error info if not success
+
     public static final String NumberFormatException = "NumberFormatException";
 
     public boolean isSuccess() {
@@ -20,8 +22,6 @@ public class Results {
     public String getErrorInfo() {
         return errorInfo;
     }
-
-    private String errorInfo;
 
     public Results(boolean success, String data, String errorInfo) {
         this.success = success;

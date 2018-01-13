@@ -1,7 +1,6 @@
-package Client;
+package Shared;
 
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 
 import Shared.ICommand;

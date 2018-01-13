@@ -37,20 +37,15 @@ public class ClientCommunicator {
             http.connect();
 
             if (http.getResponseCode() == HttpURLConnection.HTTP_OK) {
-
-                String json = Serializer.readBodyAsString(http.getInputStream());
-                Gson gson = new Gson();
-                Results resp = gson.fromJson(json, Results.class);
-                return resp;
+                return Serializer.read(http.getInputStream());
             }
             else {
-                return new Results(false, null, "Bad error code");
+                return new Results(false, null, "Bad status code in ClientCommunicator");
             }
         }
         catch (IOException e) {
-            // An exception was thrown, so display the exception's stack trace
             e.printStackTrace();
-            return new Results(false, null, "IO Exception");
+            return new Results(false, null, "IOException in ClientCommunicator");
         }
     }
 }

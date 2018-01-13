@@ -1,8 +1,5 @@
 package Client;
 
-import Server.StringProcessor;
-import Shared.ICommand;
-
 /**
  * Created by ephraimkunz on 1/12/18.
  */
@@ -27,8 +24,6 @@ public class Client {
                 intConversion = StringProcessorProxy_NoCommands.getInstance().parseInteger(in);
             } catch (NumberFormatException e) {
                 intConversion = "Caught number format exception";
-            } catch (Exception e) {
-                intConversion = "Caught " + e.toString();
             }
 
             System.out.printf(
@@ -41,7 +36,6 @@ public class Client {
         }
 
         System.out.println("***** With commands *****");
-
         for (int i = 0; i < input.length; ++i) {
             String in = input[i];
 

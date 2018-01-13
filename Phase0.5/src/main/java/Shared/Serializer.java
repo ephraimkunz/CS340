@@ -1,5 +1,7 @@
 package Shared;
 
+import com.google.gson.Gson;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,11 +14,20 @@ import java.io.OutputStreamWriter;
  */
 
 public class Serializer {
-    // Write a string to the body
-    public static void writeBodyWithString(String str, OutputStream os) throws IOException {
+    // Write a Results object to the OutputStream
+    public static void write(Results r, OutputStream os) throws IOException {
+        Gson gson = new Gson();
+
         OutputStreamWriter sw = new OutputStreamWriter(os);
-        sw.write(str);
+        sw.write(gson.toJson(r));
         sw.flush();
+    }
+
+    // Read a Results object from the InputStream
+    public static Results read(InputStream is) throws IOException {
+        String json = Serializer.readBodyAsString(is);
+        Gson gson = new Gson();
+        return gson.fromJson(json, Results.class);
     }
 
     // Read the body as a string

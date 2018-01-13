@@ -9,6 +9,7 @@ import Shared.Results;
 
 public class StringProcessorProxy_NoCommands implements IStringProcessor {
     private static StringProcessorProxy_NoCommands instance = new StringProcessorProxy_NoCommands();
+    private static final String baseURL = "http://localhost:8080/";
 
     private StringProcessorProxy_NoCommands(){}
 
@@ -16,34 +17,34 @@ public class StringProcessorProxy_NoCommands implements IStringProcessor {
         return instance;
     }
 
-    @Override
-    public String toLowercase(String s) {
-        ClientCommunicator comm = ClientCommunicator.getInstance();
-        String url = "http://localhost:8080/lowercase";
-        Results results = comm.send(url, s);
+    private static String response(Results results) {
         if (results.isSuccess()) {
             return results.getData();
         } else {
-            return results.getErrorInfo();
+            return results.getErrorInfo(); // For debugging. We don't expect to ever get this.
         }
+    }
+
+    @Override
+    public String toLowercase(String s) {
+        ClientCommunicator comm = ClientCommunicator.getInstance();
+        String url = baseURL + "lowercase";
+        Results results = comm.send(url, s);
+        return response(results);
     }
 
     @Override
     public String trim(String s) {
         ClientCommunicator comm = ClientCommunicator.getInstance();
-        String url = "http://localhost:8080/trim";
+        String url = baseURL + "trim";
         Results results = comm.send(url, s);
-        if (results.isSuccess()) {
-            return results.getData();
-        } else {
-            return results.getErrorInfo();
-        }
+        return response(results);
     }
 
     @Override
     public String parseInteger(String s) {
         ClientCommunicator comm = ClientCommunicator.getInstance();
-        String url = "http://localhost:8080/parseinteger";
+        String url = baseURL + "parseinteger";
         Results results = comm.send(url, s);
 
         if (results.isSuccess()) {
@@ -52,6 +53,6 @@ public class StringProcessorProxy_NoCommands implements IStringProcessor {
             throw new NumberFormatException();
         }
 
-        throw new RuntimeException(results.getErrorInfo());
+        return results.getErrorInfo(); // For debugging. Should never reach here normally.
     }
 }
