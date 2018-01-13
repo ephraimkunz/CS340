@@ -13,13 +13,14 @@ import Shared.Results;
 
 public class GenericCommand implements ICommand {
 
+    // All these must be primitive objects so we can ship them over the network.
     private String _className;
     private String _methodName;
-    private Class<?>[] _paramTypes;
+    private String[] _paramTypes;
     private Object[] _paramValues;
 
     public GenericCommand(String className, String methodName,
-                          Class<?>[] paramTypes, Object[] paramValues) {
+                          String[] paramTypes, Object[] paramValues) {
         _className = className;
         _methodName = methodName;
         _paramTypes = paramTypes;
@@ -35,8 +36,13 @@ public class GenericCommand implements ICommand {
             Method getInstanceMethod = receiverClass.getMethod("getInstance", null);
             Object instanceObject = getInstanceMethod.invoke(null, null);
 
-            // Call method on it
-            Method method = receiverClass.getMethod(_methodName, _paramTypes);
+            // Get _paramTypes as actual types rather than strings
+            Class<?>[] classParamTypes = new Class<?>[_paramTypes.length];
+            for(int i = 0; i < _paramTypes.length; ++i) {
+                classParamTypes[i] = Class.forName(_paramTypes[i]);
+            }
+
+            Method method = receiverClass.getMethod(_methodName, classParamTypes);
             Object result = method.invoke(instanceObject, _paramValues);
             String formatted = (String)result;
             return new Results(true, formatted, null);

@@ -24,7 +24,6 @@ public class ClientCommunicator {
 
     public Results send(String urlPath, String input) {
         try {
-            System.out.printf("Url: %s, input: %s\n", urlPath, input);
             URL url = new URL(urlPath);
             HttpURLConnection http = (HttpURLConnection)url.openConnection();
             http.setRequestMethod("POST");

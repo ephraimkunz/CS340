@@ -24,7 +24,7 @@ public class StringProcessorProxy_Commands implements IStringProcessor {
         ICommand command = new GenericCommand(
                 "Server.StringProcessor",
                 "toLowercase",
-                new Class<?>[]{String.class},
+                new String[]{"java.lang.String"},
                 new Object[]{s});
 
         Gson gson = new Gson();
@@ -43,7 +43,7 @@ public class StringProcessorProxy_Commands implements IStringProcessor {
         ICommand command = new GenericCommand(
                 "Server.StringProcessor",
                 "trim",
-                new Class<?>[]{String.class},
+                new String[]{"java.lang.String"},
                 new Object[]{s});
 
         Gson gson = new Gson();
@@ -62,7 +62,7 @@ public class StringProcessorProxy_Commands implements IStringProcessor {
         ICommand command = new GenericCommand(
                 "Server.StringProcessor",
                 "parseInteger",
-                new Class<?>[]{String.class},
+                new String[]{"java.lang.String"},
                 new Object[]{s});
 
         Gson gson = new Gson();

@@ -14,6 +14,7 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
 
+import Client.GenericCommand;
 import Shared.Results;
 import Shared.Serializer;
 
@@ -117,7 +118,18 @@ class LowercaseHandler implements HttpHandler {
 
 class ExecCommandHandler implements HttpHandler {
     @Override
-    public void handle(HttpExchange httpExchange) throws IOException {
+    public void handle(HttpExchange exchange) throws IOException {
+        InputStream reqBody = exchange.getRequestBody();
+        String input = Serializer.readBodyAsString(reqBody);
 
+        Gson gson = new Gson();
+        GenericCommand command = gson.fromJson(input, GenericCommand.class);
+        Results results = command.execute();
+
+        exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
+        OutputStream respBody = exchange.getResponseBody();
+        String json = gson.toJson(results);
+        Serializer.writeBodyWithString(json, respBody);
+        respBody.close();
     }
 }
