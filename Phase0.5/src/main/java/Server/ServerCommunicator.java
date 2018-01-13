@@ -15,6 +15,7 @@ import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
 
 import Shared.Results;
+import Shared.Serializer;
 
 /**
  * Created by ephraimkunz on 1/12/18.
@@ -46,34 +47,6 @@ public class ServerCommunicator {
         System.out.println("Hello, World!");
         new ServerCommunicator().run();
     }
-
-    // Write a string to the body
-    public static void writeBodyWithString(String str, OutputStream os) throws IOException {
-        OutputStreamWriter sw = new OutputStreamWriter(os);
-        sw.write(str);
-        sw.flush();
-    }
-
-    // Read the body as a string
-    public static String readBodyAsString(InputStream is) {
-        InputStreamReader isr = new InputStreamReader(is);
-        BufferedReader br = new BufferedReader(isr);
-
-
-        int b;
-        StringBuilder buf = new StringBuilder(512);
-        try {
-            while ((b = br.read()) != -1) {
-                buf.append((char) b);
-            }
-            br.close();
-            isr.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return buf.toString();
-    }
 }
 
 class ParseIntegerHandler implements HttpHandler {
@@ -81,7 +54,7 @@ class ParseIntegerHandler implements HttpHandler {
     @Override
     public void handle(HttpExchange exchange) throws IOException {
         InputStream reqBody = exchange.getRequestBody();
-        String input = ServerCommunicator.readBodyAsString(reqBody);
+        String input = Serializer.readBodyAsString(reqBody);
 
         Results results;
 
@@ -90,7 +63,7 @@ class ParseIntegerHandler implements HttpHandler {
             results = new Results(true, result, null);
 
         } catch (NumberFormatException e) {
-            results = new Results(false, null, "NumberFormatException");
+            results = new Results(false, null, Results.NumberFormatException);
         }
 
         exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
@@ -98,7 +71,7 @@ class ParseIntegerHandler implements HttpHandler {
         OutputStream respBody = exchange.getResponseBody();
         Gson gson = new Gson();
         String json = gson.toJson(results);
-        ServerCommunicator.writeBodyWithString(json, respBody);
+        Serializer.writeBodyWithString(json, respBody);
         respBody.close();
     }
 }
@@ -108,7 +81,7 @@ class TrimHandler implements HttpHandler {
     @Override
     public void handle(HttpExchange exchange) throws IOException {
         InputStream reqBody = exchange.getRequestBody();
-        String input = ServerCommunicator.readBodyAsString(reqBody);
+        String input = Serializer.readBodyAsString(reqBody);
 
         String result = StringProcessor.getInstance().trim(input);
         Results results = new Results(true, result, null);
@@ -118,7 +91,7 @@ class TrimHandler implements HttpHandler {
         OutputStream respBody = exchange.getResponseBody();
         Gson gson = new Gson();
         String json = gson.toJson(results);
-        ServerCommunicator.writeBodyWithString(json, respBody);
+        Serializer.writeBodyWithString(json, respBody);
         respBody.close();
     }
 }
@@ -127,7 +100,7 @@ class LowercaseHandler implements HttpHandler {
     @Override
     public void handle(HttpExchange exchange) throws IOException {
         InputStream reqBody = exchange.getRequestBody();
-        String input = ServerCommunicator.readBodyAsString(reqBody);
+        String input = Serializer.readBodyAsString(reqBody);
 
         String result = StringProcessor.getInstance().toLowercase(input);
         Results results = new Results(true, result, null);
@@ -137,7 +110,7 @@ class LowercaseHandler implements HttpHandler {
         OutputStream respBody = exchange.getResponseBody();
         Gson gson = new Gson();
         String json = gson.toJson(results);
-        ServerCommunicator.writeBodyWithString(json, respBody);
+        Serializer.writeBodyWithString(json, respBody);
         respBody.close();
     }
 }
