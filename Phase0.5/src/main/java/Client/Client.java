@@ -17,6 +17,7 @@ public class Client {
                 "hi"
         };
 
+        System.out.println("***** No commands *****");
         for (int i = 0; i < input.length; ++i) {
             String in = input[i];
 
@@ -36,6 +37,28 @@ public class Client {
                     StringProcessorProxy_NoCommands.getInstance().toLowercase(in),
                     intConversion
                     );
+        }
+
+        System.out.println("***** With commands *****");
+        for (int i = 0; i < input.length; ++i) {
+            String in = input[i];
+
+            String intConversion;
+            try {
+                intConversion = StringProcessorProxy_Commands.getInstance().parseInteger(in);
+            } catch (NumberFormatException e) {
+                intConversion = "Caught number format exception";
+            } catch (Exception e) {
+                intConversion = "Caught " + e.toString();
+            }
+
+            System.out.printf(
+                    "\nOriginal:%s\nTrimmed:%s\nLowerCased:%s\nInt:%s\n",
+                    in,
+                    StringProcessorProxy_Commands.getInstance().trim(in),
+                    StringProcessorProxy_Commands.getInstance().toLowercase(in),
+                    intConversion
+            );
         }
     }
 }
