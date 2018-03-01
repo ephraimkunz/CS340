@@ -1,1 +1,1 @@
-include ':app', ':Phase0.5', ':Client'
+include ':app', ':Phase0.5', ':Client', ':StatePattern'

@@ -3,6 +3,7 @@
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel>
       <module name="Client" target="1.6" />
+      <module name="StatePattern" target="1.6" />
     </bytecodeTargetLevel>
   </component>
 </project>

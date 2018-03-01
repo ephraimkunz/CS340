@@ -6,6 +6,7 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/Client/Client.iml" filepath="$PROJECT_DIR$/.idea/modules/Client/Client.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/Phase0.5/Phase0.5.iml" filepath="$PROJECT_DIR$/.idea/modules/Phase0.5/Phase0.5.iml" />
       <module fileurl="file://$PROJECT_DIR$/Phase0.5/Server.iml" filepath="$PROJECT_DIR$/Phase0.5/Server.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/StatePattern/StatePattern.iml" filepath="$PROJECT_DIR$/.idea/modules/StatePattern/StatePattern.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
